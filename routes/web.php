@@ -17,4 +17,24 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/test-dashboard', function () {
+    return view('test-dashboard');
+})->middleware(['auth'])->name('test.dashboard');
+
+Route::get('/colocations', function () {
+    return view('colocations');
+})->middleware(['auth'])->name('colocations.index');
+
+Route::get('/colocations/create', function () {
+    return view('colocations-create');
+})->middleware(['auth'])->name('colocations.create');
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+
+    Route::get('/', function () {
+        return view('admin-dashboard');
+    })->name('dashboard');
+
+});
+
 require __DIR__.'/auth.php';
