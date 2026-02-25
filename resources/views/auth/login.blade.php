@@ -7,7 +7,11 @@
 
         <form method="POST" action="{{ route('login') }}">
             @csrf
-
+            @if (session('error'))
+                <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                    {{ session('error') }}
+                </div>
+            @endif
             <div class="mb-6">
                 <label for="email" class="block text-sm font-bold text-gray-900 mb-1">Email</label>
                 <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username"
