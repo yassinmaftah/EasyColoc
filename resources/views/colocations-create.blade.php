@@ -78,30 +78,30 @@
 
                 <div class="w-full max-w-2xl bg-white rounded-3xl border border-gray-100 shadow-sm p-10">
 
-                    <form action="#" method="POST">
+                    <form action="{{ route('colocations.store') }}" method="POST" class="space-y-6">
                         @csrf
 
-                        <div class="mb-6">
-                            <label for="name" class="block text-sm font-bold text-slate-700 mb-2">Nom de la colocation</label>
-                            <input type="text" id="name" name="name"
-                                class="w-full border border-gray-300 rounded-lg px-4 py-3 text-slate-700 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors"
-                                placeholder="ex: Résidence Les Lilas" required>
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-slate-700 mb-1">Nom de la colocation <span class="text-red-500">*</span></label>
+                            <input type="text" id="name" name="name" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-shadow" placeholder="Ex: La Villa des Potes" required>
+
+                            @error('name')
+                                <p class="text-red-500 text-xs mt-1 font-semibold">{{ $message }}</p>
+                            @enderror
                         </div>
 
-                        <div class="mb-8">
-                            <label for="description" class="block text-sm font-bold text-slate-700 mb-2">Description (optionnel)</label>
-                            <textarea id="description" name="description" rows="4"
-                                class="w-full border border-gray-300 rounded-lg px-4 py-3 text-slate-700 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-colors resize-none"
-                                placeholder="Décrivez brièvement votre colocation..."></textarea>
+                        <div>
+                            <label for="description" class="block text-sm font-medium text-slate-700 mb-1">Description (Optionnel)</label>
+                            <textarea id="description" name="description" rows="3" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-shadow" placeholder="Une petite description de votre coloc..."></textarea>
                         </div>
 
-                        <div class="flex items-center gap-4">
-                            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-semibold shadow-sm transition-colors">
-                                Créer la colocation
-                            </button>
-                            <a href="{{ route('colocations.index') }}" class="text-slate-500 hover:text-slate-800 font-medium px-4 py-3 transition-colors">
+                        <div class="pt-4 border-t border-gray-100 flex justify-end gap-3">
+                            <a href="{{ route('colocations.index') }}" class="px-5 py-2.5 text-slate-600 font-bold hover:bg-slate-100 rounded-lg transition-colors">
                                 Annuler
                             </a>
+                            <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow-sm transition-colors">
+                                Créer la colocation
+                            </button>
                         </div>
                     </form>
 
