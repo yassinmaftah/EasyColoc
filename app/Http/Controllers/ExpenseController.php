@@ -70,4 +70,12 @@ class ExpenseController extends Controller
 
         return back()->with('success', 'Expense added');
     }
+
+    public function markAsPaid($id)
+    {
+        $detail = ExpenseDetail::findOrFail($id);
+        $detail->update(['status' => 'paid']);
+
+        return back()->with('success', 'Expense is paid');
+    }
 }
