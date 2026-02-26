@@ -6,13 +6,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ColocationController;
 use App\Http\Controllers\CategoryController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', function () {return view('welcome');});
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified', 'is_banned'])->name('dashboard');
+Route::get('/dashboard', function () {return view('dashboard');})->middleware(['auth', 'verified', 'is_banned'])->name('dashboard');
 
 Route::middleware('auth', 'is_banned')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -20,9 +16,7 @@ Route::middleware('auth', 'is_banned')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/dashboard', [App\Http\Controllers\ColocationController::class, 'dashboard'])
-    ->middleware(['auth', 'is_banned'])
-    ->name('user.dashboard');
+Route::get('/user-dashboard', [App\Http\Controllers\ColocationController::class, 'dashboard'])->middleware(['auth', 'is_banned'])->name('user.dashboard');
 
 Route::get('/colocations', function () {
     return view('colocations');
@@ -37,6 +31,10 @@ Route::post('/colocations', [ColocationController::class, 'store'])->middleware(
 
 Route::post('/categories', [CategoryController::class, 'store'])->middleware(['auth', 'is_banned'])->name('categories.store');
 Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->middleware(['auth', 'is_banned'])->name('categories.destroy');
+
+use App\Http\Controllers\ExpenseController;
+
+Route::post('/expenses', [ExpenseController::class, 'store'])->middleware(['auth', 'is_banned'])->name('expenses.store');
 
 // Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
 
