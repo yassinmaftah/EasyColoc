@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ColocationController;
+use App\Http\Controllers\CategoryController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -33,6 +34,9 @@ Route::get('/colocations/create', function () {
 
 Route::get('/colocations', [ColocationController::class, 'index'])->middleware(['auth', 'is_banned'])->name('colocations.index');
 Route::post('/colocations', [ColocationController::class, 'store'])->middleware(['auth', 'is_banned'])->name('colocations.store');
+
+Route::post('/categories', [CategoryController::class, 'store'])->middleware(['auth', 'is_banned'])->name('categories.store');
+Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->middleware(['auth', 'is_banned'])->name('categories.destroy');
 
 // Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
 
