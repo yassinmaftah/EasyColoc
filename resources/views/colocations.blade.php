@@ -77,27 +77,70 @@
                 </div>
             </header>
 
-            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-8 flex items-center justify-center">
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-8">
 
-                <div class="w-full max-w-4xl bg-white rounded-3xl border border-gray-100 shadow-sm p-16 flex flex-col items-center justify-center min-h-[500px]">
+                @if(session('success'))
+                    <div class="bg-emerald-100 border border-emerald-400 text-emerald-700 px-4 py-3 rounded relative mb-4">
+                        {{ session('success') }}
+                    </div>
+                @endif
+                @if(session('error'))
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
-                    <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-6">
-                        <svg class="w-12 h-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
+                <div class="flex justify-between items-center mb-8 border-b border-gray-200 pb-4">
+                    <h2 class="text-2xl font-black text-slate-800 italic uppercase">Historique des Colocations</h2>
+                    <a href="{{ route('colocations.create') }}" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-bold transition-colors shadow-sm">
+                        + Nouvelle Colocation
+                    </a>
+                </div>
+
+                @if($colocations->isEmpty())
+
+                    <div class="flex flex-col items-center justify-center h-64 max-w-lg mx-auto text-center mt-10">
+                        <h2 class="text-xl font-black text-slate-800 mb-2">Aucune colocation trouvée</h2>
+                        <p class="text-slate-500 mb-6">Vous n'avez pas encore créé ou rejoint de colocation.</p>
                     </div>
 
-                    <h2 class="text-2xl font-bold text-slate-800 mb-2">Aucune colocation</h2>
-                    <p class="text-gray-500 text-center max-w-sm mb-8">
-                        Vous ne faites partie d'aucune colocation pour le moment. Commencez par en créer une nouvelle.
-                    </p>
+                @else
 
-                    <a href="{{ route('colocations.create') }}" class="inline-flex items-center bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-semibold shadow-sm transition-colors gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                        Créer une colocation
-                    </a>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        @foreach($colocations as $coloc)
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-between items-start mb-4">
+                                        <h3 class="text-lg font-bold text-slate-800">{{ $coloc->name }}</h3>
 
-                </div>
+                                        @if($coloc->status === 'active')
+                                            <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2.5 py-1 rounded flex items-center gap-1.5">
+                                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Actif
+                                            </span>
+                                        @else
+                                            <span class="bg-red-100 text-red-700 text-xs font-bold px-2.5 py-1 rounded flex items-center gap-1.5">
+                                                <span class="w-2 h-2 rounded-full bg-red-500"></span> Inactif
+                                            </span>
+                                        @endif
+                                    </div>
+
+                                    <p class="text-sm text-gray-500 mb-4">Créée le {{ $coloc->created_at->format('d/m/Y') }}</p>
+                                </div>
+
+                                @if($coloc->status === 'active')
+                                    <a href="{{ route('user.dashboard') }}" class="block w-full text-center px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold rounded-lg transition-colors">
+                                        Voir le Dashboard
+                                    </a>
+                                @else
+                                    <button disabled class="block w-full text-center px-4 py-2 bg-gray-100 text-gray-400 text-sm font-bold rounded-lg cursor-not-allowed">
+                                        Colocation not active
+                                    </button>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+
+                @endif
 
             </main>
         </div>
