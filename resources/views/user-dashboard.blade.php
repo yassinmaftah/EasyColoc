@@ -78,73 +78,86 @@
                 </div>
             </header>
 
-            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-8">
+<main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-8">
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between h-40">
-                        <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500 font-medium">Mon score réputation</p>
-                            <p class="text-4xl font-black text-slate-800 mt-1">0</p>
-                        </div>
-                    </div>
+    @if($activeColocation)
 
-                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between h-40">
-                        <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-500 font-medium">Dépenses Globales (Feb)</p>
-                            <p class="text-4xl font-black text-slate-800 mt-1">0,00 €</p>
-                        </div>
+        <div class="flex justify-between items-center mb-8 border-b border-gray-200 pb-4">
+            <h2 class="text-2xl font-black text-slate-800 italic uppercase">{{ $activeColocation->name }}</h2>
+
+            <button class="px-4 py-2 border border-red-500 text-red-500 hover:bg-red-50 rounded-lg text-sm font-bold transition-colors">
+                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+                Annuler la colocation
+            </button>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+            <div class="flex-1">
+                <h3 class="text-xl font-bold text-slate-800 mb-4">Dépenses récentes</h3>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <p class="text-center text-gray-400 py-8">Aucune dépense pour le moment.</p>
+                </div>
+            </div>
+
+            <div class="w-full lg:w-80 space-y-6">
+
+                <div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-4">Qui doit à qui ?</h3>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 text-center">
+                        <p class="text-gray-400 text-sm">Aucun remboursement en attente.</p>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-                    <div class="lg:col-span-2">
-                        <div class="flex items-center justify-between mb-4 px-1">
-                            <h2 class="text-xl font-bold text-slate-800">Dépenses récentes</h2>
-                            <a href="#" class="text-sm font-semibold text-emerald-600 hover:text-emerald-700">Voir tout</a>
-                        </div>
-
-                        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden min-h-[300px] flex flex-col">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="border-b border-gray-100 text-xs text-gray-400 uppercase tracking-wider">
-                                        <th class="p-5 font-semibold">Titre / Catégorie</th>
-                                        <th class="p-5 font-semibold">Payeur</th>
-                                        <th class="p-5 font-semibold">Montant</th>
-                                        <th class="p-5 font-semibold">Coloc</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td colspan="4" class="p-10 text-center text-gray-400">
-                                            Aucune dépense récente.
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                <div class="bg-slate-900 rounded-xl shadow-sm p-6 text-white">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold">Membres de la coloc</h3>
+                        <span class="bg-slate-800 text-xs px-2 py-1 rounded text-slate-300">ACTIFS</span>
                     </div>
 
-                    <div class="lg:col-span-1 mt-10 lg:mt-0">
-                        <div class="bg-slate-800 rounded-2xl shadow-lg border border-slate-700 p-6">
-                            <div class="flex items-center justify-between mb-6">
-                                <h3 class="text-lg font-bold text-white">Membres de la coloc</h3>
-                                <span class="bg-slate-700 text-slate-300 text-xs font-bold px-2.5 py-1 rounded">VIDE</span>
+                    <div class="space-y-3 mb-6">
+                        @foreach($activeColocation->memberships as $member)
+                            <div class="flex justify-between items-center p-3 bg-slate-800/50 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center font-bold text-sm">
+                                        {{ strtoupper(substr($member->user->name, 0, 1)) }}
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-sm">{{ $member->user->name }}</p>
+                                        @if($member->role === 'owner')
+                                            <p class="text-xs text-amber-500 font-bold">👑 OWNER</p>
+                                        @endif
+                                    </div>
+                                </div>
+                                <span class="text-emerald-500 font-bold">0</span>
                             </div>
-                            <div class="text-slate-400 text-sm">
-                                Aucune colocation active.
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
 
+                    <button class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm font-bold transition-colors flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                        Inviter un membre
+                    </button>
                 </div>
-            </main>
+
+            </div>
+        </div>
+
+    @else
+
+        <div class="flex flex-col items-center justify-center h-full max-w-lg mx-auto text-center mt-20">
+            <h2 class="text-2xl font-black text-slate-800 mb-4">Bienvenue sur votre Dashboard</h2>
+            <p class="text-slate-500 mb-8">Vous devez créer ou rejoindre une colocation pour voir vos dépenses et vos colocataires ici.</p>
+
+            <a href="{{ route('colocations.create') }}" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition-all">
+                Créer une colocation
+            </a>
+        </div>
+
+    @endif
+
+</main>
+
+
         </div>
     </div>
 
