@@ -71,8 +71,8 @@ class ColocationController extends Controller
         $activeColocation = null;
 
         if ($activeMembership)
-            $activeColocation = Colocation::with('memberships.user')->find($activeMembership->colocation_id);
+            $activeColocation = Colocation::with(['memberships.user', 'categories'])->find($activeMembership->colocation_id);
 
-        return view('user-dashboard', compact('activeColocation'));
+        return view('user-dashboard', compact('activeColocation', 'activeMembership'));
     }
 }
