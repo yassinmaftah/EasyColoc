@@ -29,4 +29,13 @@ class Expense extends Model
     {
         return $this->hasMany(ExpenseDetail::class);
     }
+    public function payer()
+    {
+        return $this->belongsTo(User::class, 'payer_id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }
