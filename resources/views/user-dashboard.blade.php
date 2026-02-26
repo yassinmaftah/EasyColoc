@@ -96,19 +96,106 @@
                         Ajouter
                     </button>
                 </div>
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <p class="text-center text-gray-400 py-8">Aucune dépense pour le moment.</p>
-                </div>
+                @if($activeColocation->expenses->count() > 0)
+                    <div class="space-y-3 mt-4">
+                        @foreach($activeColocation->expenses as $expense)
+                            <div class="flex justify-between items-center p-4 border border-gray-100 rounded-lg bg-gray-50 shadow-sm">
+                                <div>
+                                    <p class="font-bold text-slate-800">{{ $expense->title }}</p>
+                                    <p class="text-xs text-gray-500 mt-1">
+                                        Payé par <span class="font-semibold text-slate-700">{{ $expense->payer->name }}</span>
+                                        le {{ \Carbon\Carbon::parse($expense->expense_date)->format('d/m/Y') }}
+                                        @if($expense->category)
+                                            <span class="ml-1 px-2 py-0.5 bg-gray-200 rounded-full text-[10px]">{{ $expense->category->name }}</span>
+                                        @endif
+                                    </p>
+                                </div>
+                                <div class="font-black text-slate-800 text-lg">
+                                    {{ number_format($expense->amount, 2) }} <span class="text-sm">DH</span>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mt-4">
+                        <p class="text-center text-gray-400 py-8">Aucune dépense pour le moment.</p>
+                    </div>
+                @endif
+
+                @if($activeMembership && $activeMembership->role === 'owner')
+                    <h3 class="font-bold text-slate-800 mb-4 mt-8 text-lg">Toutes les dettes (Owner)</h3>
+                    @if($allPendingDetails->count() > 0)
+                        <div class="bg-white rounded-xl shadow-sm border border-orange-100 p-4">
+                            <ul class="space-y-3">
+                                @foreach($allPendingDetails as $detail)
+                                    <li class="flex justify-between items-center p-3 border border-orange-50 bg-orange-50/50 rounded-lg">
+                                        <div>
+                                            <p class="text-sm font-bold text-slate-800">{{ $detail->debtor->name }}</p>
+                                            <p class="text-xs text-orange-600 mt-0.5">
+                                                Doit à <span class="font-bold">{{ $detail->expense->payer->name }}</span>
+                                            </p>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="font-black text-orange-600 mb-1">
+                                                {{ number_format($detail->amount, 2) }} <span class="text-xs">DH</span>
+                                            </div>
+                                            <form action="{{ route('expenses.pay', $detail->id) }}" method="POST">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-1 rounded hover:bg-emerald-200 font-bold transition-colors">
+                                                    Mark as paid
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @else
+                        <p class="text-sm text-gray-500">Aucune dette en attente dans la colocation.</p>
+                    @endif
+                @endif
+
             </div>
 
             <div class="w-full lg:w-80 space-y-6">
 
                 <div>
                     <h3 class="text-xl font-bold text-slate-800 mb-4">Qui doit à qui ?</h3>
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 text-center">
-                        <p class="text-gray-400 text-sm">Aucun remboursement en attente.</p>
-                    </div>
+                    <div class="w-full lg:w-80">
+                <h3 class="font-bold text-slate-800 mb-4 text-lg">Ce que je dois</h3>
+
+                    @if($myPendingDetails->count() > 0)
+                        <div class="bg-white rounded-xl shadow-sm border border-red-100 p-4">
+                            <ul class="space-y-3">
+                                @foreach($myPendingDetails as $detail)
+                                    <li class="flex justify-between items-center p-3 border border-red-50 bg-red-50/50 rounded-lg">
+                                        <div class="text-right">
+                                            <div class="font-black text-red-600 mb-1">
+                                                {{ number_format($detail->amount, 2) }} <span class="text-xs">DH</span>
+                                            </div>
+                                            <form action="{{ route('expenses.pay', $detail->id) }}" method="POST">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-1 rounded hover:bg-emerald-200 font-bold transition-colors">
+                                                    Mark as paid
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @else
+                        <div class="bg-white rounded-xl shadow-sm border border-emerald-100 p-6">
+                            <div class="flex flex-col items-center justify-center text-center">
+                                <svg class="w-10 h-10 text-emerald-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <p class="text-sm text-emerald-600 font-medium">Super ! Vous n'avez aucune dette en attente.</p>
+                            </div>
+                        </div>
+                    @endif
                 </div>
+
 
                 <div class="bg-slate-900 rounded-xl shadow-sm p-6 text-white">
                     <div class="flex justify-between items-center mb-6">
