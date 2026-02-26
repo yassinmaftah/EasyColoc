@@ -30,7 +30,7 @@
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                         Admin
                     </a>
-                    <a href="#" class="flex items-center px-4 py-3 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
+                    <a href="{{route('profile.edit')}}" class="flex items-center px-4 py-3 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                         Profile
                     </a>
@@ -89,7 +89,13 @@
 
         <div class="flex flex-col lg:flex-row gap-8">
             <div class="flex-1">
-                <h3 class="text-xl font-bold text-slate-800 mb-4">Dépenses récentes</h3>
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-slate-800">Dépenses récentes</h3>
+                    <button onclick="document.getElementById('expenseModal').classList.remove('hidden')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-lg shadow-sm transition-colors flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Ajouter
+                    </button>
+                </div>
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                     <p class="text-center text-gray-400 py-8">Aucune dépense pour le moment.</p>
                 </div>
@@ -159,6 +165,7 @@
 
                     <form action="{{ route('categories.store') }}" method="POST" class="flex gap-2">
                         @csrf
+
                         <input type="hidden" name="colocation_id" value="{{ $activeColocation->id }}">
 
                         <input type="text" name="name" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500">
@@ -186,6 +193,74 @@
 
     @endif
 
+@if($activeColocation)
+    <div id="expenseModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="text-lg font-black text-slate-800">Ajouter une dépense</h3>
+                <button onclick="document.getElementById('expenseModal').classList.add('hidden')" class="text-gray-400 hover:text-red-500 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <form action="{{ route('expenses.store') }}" method="POST" class="p-6 space-y-4">
+                @csrf
+                <input type="hidden" name="colocation_id" value="{{ $activeColocation->id }}">
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">Titre de la dépense</label>
+                    <input type="text" name="title" required placeholder="Ex: Courses Carrefour" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+
+                <div class="flex gap-4">
+                    <div class="flex-1">
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Montant (DH)</label>
+                        <input type="number" step="0.01" name="amount" required placeholder="0.00" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-sm font-bold text-slate-700 mb-1">Date</label>
+                        <input type="date" name="expense_date" required value="{{ date('Y-m-d') }}" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">Catégorie</label>
+                    <select name="category_id" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <option value="">-- Sans catégorie --</option>
+                        @foreach($activeColocation->categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">Payé par</label>
+                    @if($activeMembership && $activeMembership->role === 'owner')
+                        <select name="payer_id" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                            @foreach($activeColocation->memberships as $member)
+                                <option value="{{ $member->user->id }}" {{ Auth::id() == $member->user->id ? 'selected' : '' }}>
+                                    {{ $member->user->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    @else
+                        <input type="hidden" name="payer_id" value="{{ Auth::id() }}">
+                        <input type="text" disabled value="{{ Auth::user()->name }}" class="w-full border border-gray-200 bg-gray-50 rounded-lg px-3 py-2 text-slate-500 cursor-not-allowed">
+                    @endif
+                </div>
+
+                <div class="pt-4 flex gap-3">
+                    <button type="button" onclick="document.getElementById('expenseModal').classList.add('hidden')" class="flex-1 px-4 py-2 border border-gray-300 text-slate-700 rounded-lg font-bold hover:bg-gray-50 transition-colors">
+                        Annuler
+                    </button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-slate-900 text-white rounded-lg font-bold hover:bg-slate-800 transition-colors">
+                        Ajouter la dépense
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endif
 </main>
 
 
