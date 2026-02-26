@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Colocation;
 use App\Models\Membership;
+use App\Models\Expense;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\ExpenseDetail;
 
 class ColocationController extends Controller
 {
@@ -59,20 +61,48 @@ class ColocationController extends Controller
             ->with('success', 'La colocation a été créée avec succès !');
     }
 
-    public function dashboard()
+public function dashboard()
     {
-        $activeMembership = Membership::where('user_id', Auth::id())
+        $activeMembership = null;
+        $activeColocation = null;
+        $myPendingDetails = [];
+        $allPendingDetails = [];
+
+        $membership = Membership::where('user_id', Auth::id())
             ->whereNull('left_at')
-            ->whereHas('colocation', function ($query) {
-                $query->where('status', 'active');
-            })
             ->first();
 
-        $activeColocation = null;
+        if ($membership)
+        {
+            $colocation = Colocation::find($membership->colocation_id);
 
-        if ($activeMembership)
-            $activeColocation = Colocation::with(['memberships.user', 'categories'])->find($activeMembership->colocation_id);
+            if ($colocation && $colocation->status === 'active')
+            {
+                $activeMembership = $membership;
 
-        return view('user-dashboard', compact('activeColocation', 'activeMembership'));
+                $activeColocation = Colocation::with('memberships.user', 'categories', 'expenses.payer', 'expenses.category')
+                    ->find($colocation->id);
+                    
+                $activeColocation->expenses = $activeColocation->expenses->sortByDesc('expense_date');
+                $expenseIds = Expense::where('colocation_id', $activeColocation->id)->pluck('id');
+
+                $myPendingDetails = ExpenseDetail::with('expense.payer')
+                    ->where('debtor_id', Auth::id())
+                    ->where('status', 'unpaid')
+                    ->whereIn('expense_id', $expenseIds)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+
+                if ($activeMembership->role === 'owner') {
+                    $allPendingDetails = ExpenseDetail::with(['expense.payer', 'debtor'])
+                        ->where('status', 'unpaid')
+                        ->whereIn('expense_id', $expenseIds)
+                        ->get();
+                }
+            }
+        }
+
+        return view('user-dashboard', compact('activeColocation', 'activeMembership', 'myPendingDetails', 'allPendingDetails'));
     }
+
 }
