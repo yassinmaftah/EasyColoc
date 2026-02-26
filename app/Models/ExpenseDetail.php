@@ -21,4 +21,13 @@ class ExpenseDetail extends Model
             'amount' => 'decimal:2',
         ];
     }
+    public function expense()
+    {
+        return $this->belongsTo(Expense::class);
+    }
+
+    public function debtor()
+    {
+        return $this->belongsTo(User::class, 'debtor_id');
+    }
 }
