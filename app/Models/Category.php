@@ -17,4 +17,8 @@ class Category extends Model
             'colocation_id' => 'integer',
         ];
     }
+    public function colocation()
+    {
+        return $this->belongsTo(Colocation::class);
+    }
 }
