@@ -61,15 +61,11 @@
             <header class="h-20 bg-white shadow-sm flex items-center justify-between px-8 z-10">
                 <div class="flex items-center gap-6">
                     <h1 class="text-2xl font-black text-slate-800 italic uppercase tracking-tight">Tableau de bord</h1>
-                    <button class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-lg font-medium shadow-sm transition-colors flex items-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                        Nouvelle colocation
-                    </button>
                 </div>
 
                 <div class="flex items-center gap-4">
                     <div class="text-right">
-                        <p class="text-sm font-bold text-slate-800">ADMIN</p>
+                        <p class="text-sm font-bold text-slate-800">{{ Auth::user()->name }}</p>
                         <p class="text-xs text-emerald-500 font-semibold">EN LIGNE</p>
                     </div>
                     <div class="h-10 w-10 bg-slate-800 rounded-full flex items-center justify-center text-white font-bold shadow-inner">
@@ -124,7 +120,7 @@
                                     <div>
                                         <p class="font-bold text-sm">{{ $member->user->name }}</p>
                                         @if($member->role === 'owner')
-                                            <p class="text-xs text-amber-500 font-bold">👑 OWNER</p>
+                                            <p class="text-xs text-amber-500 font-bold"> OWNER</p>
                                         @endif
                                     </div>
                                 </div>
@@ -137,6 +133,41 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
                         Inviter un membre
                     </button>
+                    @if($activeMembership && $activeMembership->role === 'owner')
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mt-6">
+                    <h3 class="font-bold text-slate-800 mb-4">Gérer les catégories</h3>
+
+                    @if($activeColocation->categories->count() > 0)
+                        <ul class="space-y-2 mb-6">
+                            @foreach($activeColocation->categories as $category)
+                                <li class="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                    <span class="text-sm font-bold text-slate-700">{{ $category->name }}</span>
+
+                                    <form action="{{ route('categories.destroy', $category->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this category ?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-500 hover:text-red-700 text-xs font-bold transition-colors">
+                                            Supprimer
+                                        </button>
+                                    </form>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p class="text-xs text-gray-400 mb-4 text-center italic">Aucune catégorie pour le moment.</p>
+                    @endif
+
+                    <form action="{{ route('categories.store') }}" method="POST" class="flex gap-2">
+                        @csrf
+                        <input type="hidden" name="colocation_id" value="{{ $activeColocation->id }}">
+
+                        <input type="text" name="name" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <button type="submit" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors">
+                            Add
+                        </button>
+                    </form>
+                </div>
+                @endif
                 </div>
 
             </div>

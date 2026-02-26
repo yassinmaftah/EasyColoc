@@ -60,15 +60,11 @@
             <header class="h-20 bg-white shadow-sm flex items-center justify-between px-8 z-10">
                 <div class="flex items-center gap-6">
                     <h1 class="text-2xl font-black text-slate-800 italic uppercase tracking-tight">Mes Colocations</h1>
-                    <a href="{{ route('colocations.create') }}" class="inline-flex items-center bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-semibold shadow-sm transition-colors gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                        Nouvelle colocation
-                    </a>
                 </div>
 
                 <div class="flex items-center gap-4">
                     <div class="text-right">
-                        <p class="text-sm font-bold text-slate-800">ADMIN</p>
+                        <p class="text-sm font-bold text-slate-800">{{ Auth::user()->name }}</p>
                         <p class="text-xs text-emerald-500 font-semibold">EN LIGNE</p>
                     </div>
                     <div class="h-10 w-10 bg-slate-800 rounded-full flex items-center justify-center text-white font-bold shadow-inner">
