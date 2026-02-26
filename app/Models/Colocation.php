@@ -13,4 +13,9 @@ class Colocation extends Model
     ];
 
     protected function casts(): array{return ['created_by' => 'integer',];}
+
+    public function memberships()
+    {
+        return $this->hasMany(Membership::class);
+    }
 }
