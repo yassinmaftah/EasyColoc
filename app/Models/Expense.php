@@ -25,4 +25,8 @@ class Expense extends Model
             'expense_date' => 'date',
         ];
     }
+    public function details()
+    {
+        return $this->hasMany(ExpenseDetail::class);
+    }
 }
