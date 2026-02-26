@@ -35,14 +35,8 @@ Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])-
 use App\Http\Controllers\ExpenseController;
 
 Route::post('/expenses', [ExpenseController::class, 'store'])->middleware(['auth', 'is_banned'])->name('expenses.store');
+Route::patch('/expenses-details/{id}/pay', [ExpenseController::class, 'markAsPaid'])->middleware(['auth', 'is_banned'])->name('expenses.pay');
 
-// Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-
-//     Route::get('/', function () {
-//         return view('admin-dashboard');
-//     })->name('dashboard');
-
-// });
 
 Route::middleware(['auth','is_banned', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('dashboard');
