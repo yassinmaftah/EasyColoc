@@ -18,4 +18,8 @@ class Colocation extends Model
     {
         return $this->hasMany(Membership::class);
     }
+    public function categories()
+    {
+        return $this->hasMany(Category::class);
+    }
 }
