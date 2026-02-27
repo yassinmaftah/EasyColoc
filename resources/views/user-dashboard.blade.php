@@ -222,10 +222,28 @@
                         @endforeach
                     </div>
 
-                    <button class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm font-bold transition-colors flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
-                        Inviter un membre
-                    </button>
+                    @if($activeMembership && $activeMembership->role === 'owner')
+                        <div class="mt-4">
+                            <button onclick="document.getElementById('invite-form').classList.toggle('hidden')"
+                                    class="w-full bg-[#1e293b] text-white py-3 rounded-lg flex justify-center items-center hover:bg-slate-700 transition font-bold">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                                Inviter un membre
+                            </button>
+
+                            <form id="invite-form" action="{{ route('invitations.store') }}" method="POST" class="hidden mt-3 bg-[#1e293b] p-4 rounded-lg border border-slate-700">
+                                @csrf
+                                <label class="block text-sm font-medium text-slate-300 mb-2">Adresse email du futur colocataire</label>
+                                <div class="flex gap-2">
+                                    <input type="email" name="email" required
+                                        class="w-full bg-slate-800 border-slate-600 text-white rounded-lg shadow-sm focus:ring-emerald-500 focus:border-emerald-500"
+                                        placeholder="exemple@email.com">
+                                    <button type="submit" class="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 font-bold transition">
+                                        Envoyer
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    @endif
                     @if($activeMembership && $activeMembership->role === 'owner')
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mt-6">
                     <h3 class="font-bold text-slate-800 mb-4">Gérer les catégories</h3>
