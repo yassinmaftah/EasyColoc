@@ -5,8 +5,9 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ColocationController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\InvitationController;
 
-Route::get('/', function () {return view('welcome');});
+Route::get('/', function () {return view('auth.login');});
 
 Route::get('/dashboard', function () {return view('dashboard');})->middleware(['auth', 'verified', 'is_banned'])->name('dashboard');
 
@@ -37,6 +38,8 @@ use App\Http\Controllers\ExpenseController;
 Route::post('/expenses', [ExpenseController::class, 'store'])->middleware(['auth', 'is_banned'])->name('expenses.store');
 Route::patch('/expenses-details/{id}/pay', [ExpenseController::class, 'markAsPaid'])->middleware(['auth', 'is_banned'])->name('expenses.pay');
 
+Route::post('/invitations', [InvitationController::class, 'store'])->middleware(['auth', 'is_banned'])->name('invitations.store');
+Route::get('/invitations/{token}/accept', [InvitationController::class, 'accept'])->middleware(['auth', 'is_banned'])->name('invitations.accept');
 
 Route::middleware(['auth','is_banned', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('dashboard');
