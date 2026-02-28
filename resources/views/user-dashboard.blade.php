@@ -179,64 +179,81 @@
                     @endif
                 @endif
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-                        <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            Ce que je dois
-                        </h3>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
 
-                        <div class="space-y-4">
-                            @forelse($myPendingDetails as $detail)
-                                <div class="bg-orange-50 border border-orange-100 p-4 rounded-xl flex justify-between items-center">
-                                    <div>
-                                        <div class="font-bold text-slate-800">Moi</div>
-                                        <div class="text-sm text-orange-600 font-medium">Doit à {{ $detail->expense->payer->name }}</div>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="font-bold text-orange-600 text-lg">{{ number_format($detail->amount, 2) }} DH</div>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="text-center p-4 bg-slate-50 rounded-xl border border-slate-100 text-slate-500 text-sm italic">
-                                    Vous n'avez aucune dette en cours. Bravo !
-                                </div>
-                            @endforelse
+    <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
+        <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Ce que je dois
+        </h3>
+
+        <div class="space-y-4">
+            @forelse($myPendingDetails as $detail)
+                <div class="bg-orange-50 border border-orange-100 p-4 rounded-xl flex justify-between items-center">
+                    <div>
+                        <div class="text-xs font-bold text-orange-700 uppercase tracking-wider mb-1">
+                            {{ $detail->expense->title }} ({{ \Carbon\Carbon::parse($detail->expense->expense_date)->format('d/m') }})
                         </div>
+                        <div class="font-bold text-slate-800">Moi</div>
+                        <div class="text-sm text-orange-600 font-medium italic">Doit à {{ $detail->expense->payer->name }}</div>
                     </div>
+                    <div class="text-right flex flex-col items-end gap-2">
+                        <div class="font-bold text-orange-600 text-lg">{{ number_format($detail->amount, 2) }} DH</div>
 
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-                        <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            Ce qu'on me doit
-                        </h3>
-
-                        <div class="space-y-4">
-                            @forelse($owedToMeDetails as $detail)
-                                <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl flex justify-between items-center">
-                                    <div>
-                                        <div class="font-bold text-slate-800 capitalize">{{ $detail->debtor->name }}</div>
-                                        <div class="text-sm text-emerald-600 font-medium">Me doit</div>
-                                    </div>
-                                    <div class="text-right flex flex-col items-end gap-2">
-                                        <div class="font-bold text-emerald-600 text-lg">{{ number_format($detail->amount, 2) }} DH</div>
-                                        <form action="{{ route('expenses.pay', $detail->id) }}" method="POST">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit" class="bg-emerald-200 text-emerald-800 px-3 py-1 rounded text-xs font-bold hover:bg-emerald-300 transition-colors shadow-sm">
-                                                Mark as paid
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="text-center p-4 bg-slate-50 rounded-xl border border-slate-100 text-slate-500 text-sm italic">
-                                    Personne ne vous doit d'argent pour le moment.
-                                </div>
-                            @endforelse
-                        </div>
+                        <form action="{{ route('expenses.pay', $detail->id) }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit" class="bg-orange-200 text-orange-800 px-3 py-1 rounded text-[10px] font-black hover:bg-orange-300 transition uppercase shadow-sm">
+                                Mark as paid
+                            </button>
+                        </form>
                     </div>
                 </div>
+            @empty
+                <div class="text-center p-4 bg-slate-50 rounded-xl border border-slate-100 text-slate-500 text-sm italic">
+                    Vous n'avez aucune dette en cours. Bravo !
+                </div>
+            @endforelse
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
+        <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Ce qu'on me doit
+        </h3>
+
+        <div class="space-y-4">
+            @forelse($owedToMeDetails as $detail)
+                <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl flex justify-between items-center">
+                    <div>
+                        <div class="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1">
+                            {{ $detail->expense->title }} ({{ \Carbon\Carbon::parse($detail->expense->expense_date)->format('d/m') }})
+                        </div>
+                        <div class="font-bold text-slate-800 capitalize">{{ $detail->debtor->name }}</div>
+                        <div class="text-sm text-emerald-600 font-medium italic">Me doit</div>
+                    </div>
+                    <div class="text-right flex flex-col items-end gap-2">
+                        <div class="font-bold text-emerald-600 text-lg">{{ number_format($detail->amount, 2) }} DH</div>
+
+                        <form action="{{ route('expenses.pay', $detail->id) }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit" class="bg-emerald-200 text-emerald-800 px-3 py-1 rounded text-[10px] font-black hover:bg-emerald-300 transition uppercase shadow-sm">
+                                Mark as paid
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            @empty
+                <div class="text-center p-4 bg-slate-50 rounded-xl border border-slate-100 text-slate-500 text-sm italic">
+                    Personne ne vous doit d'argent pour le moment.
+                </div>
+            @endforelse
+        </div>
+    </div>
+
+</div>
 
             </div> <div class="w-full xl:w-80 space-y-6">
 
