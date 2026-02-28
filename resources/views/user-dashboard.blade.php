@@ -26,10 +26,12 @@
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                         Colocations
                     </a>
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center px-4 py-3 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                        Admin
-                    </a>
+                    @if(Auth::user()->is_global_admin)
+                        <a href="{{ route('admin.dashboard') }}" class="flex items-center px-4 py-3 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            Admin
+                        </a>
+                    @endif
                     <a href="{{route('profile.edit')}}" class="flex items-center px-4 py-3 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                         Profile
@@ -37,13 +39,18 @@
                 </nav>
             </div>
 
-
-
             <form method="POST" action="{{ route('logout') }}" class="mt-4 pt-4 border-t border-slate-800">
-                <div class="p-6">
-                    <div class="bg-slate-800 rounded-xl p-4 border border-slate-700">
-                        <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-1">Votre Réputation</p>
-                        <p class="text-2xl font-bold text-emerald-400">+0 pts</p>
+                <div class="mt-auto p-4 bg-[#1e293b] rounded-lg mx-4 mb-4 border border-slate-700">
+                    <div class="text-xs text-slate-400 font-bold mb-1 uppercase tracking-wider">Votre Réputation</div>
+
+                    @php
+                        $reputation = Auth::user()->reputation;
+                        $colorClass = $reputation < 0 ? 'text-red-500' : 'text-emerald-500';
+                        $sign = $reputation > 0 ? '+' : '';
+                    @endphp
+
+                    <div class="font-bold text-2xl {{ $colorClass }}">
+                        {{ $sign }}{{ $reputation }} pts
                     </div>
                 </div>
                 @csrf
@@ -69,25 +76,41 @@
                         <p class="text-xs text-emerald-500 font-semibold">EN LIGNE</p>
                     </div>
                     <div class="h-10 w-10 bg-slate-800 rounded-full flex items-center justify-center text-white font-bold shadow-inner">
-                        A
+                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                     </div>
                 </div>
             </header>
 
 <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-8">
 
+    @if (session('success'))
+        <div class="mb-4 bg-emerald-500/10 border border-emerald-500 text-emerald-500 px-4 py-3 rounded-lg flex items-center shadow-sm">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            <span class="block sm:inline font-medium">{{ session('success') }}</span>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="mb-4 bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded-lg flex items-center shadow-sm">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span class="block sm:inline font-medium">{{ session('error') }}</span>
+        </div>
+    @endif
+
     @if($activeColocation)
 
         <div class="flex justify-between items-center mb-8 border-b border-gray-200 pb-4">
             <h2 class="text-2xl font-black text-slate-800 italic uppercase">{{ $activeColocation->name }}</h2>
 
-            <button class="px-4 py-2 border border-red-500 text-red-500 hover:bg-red-50 rounded-lg text-sm font-bold transition-colors">
-                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
-                Annuler la colocation
-            </button>
+            <form action="{{ route('colocation.leave') }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir quitter cette colocation ?');">
+                @csrf
+                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
+                    Quitter la colocation
+                </button>
+            </form>
         </div>
 
-        <div class="flex flex-col lg:flex-row gap-8">
+        <div class="flex flex-col xl:flex-row gap-8">
             <div class="flex-1">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-xl font-bold text-slate-800">Dépenses récentes</h3>
@@ -156,46 +179,66 @@
                     @endif
                 @endif
 
-            </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
+                        <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Ce que je dois
+                        </h3>
 
-            <div class="w-full lg:w-80 space-y-6">
-
-                <div>
-                    <h3 class="text-xl font-bold text-slate-800 mb-4">Qui doit à qui ?</h3>
-                    <div class="w-full lg:w-80">
-                <h3 class="font-bold text-slate-800 mb-4 text-lg">Ce que je dois</h3>
-
-                    @if($myPendingDetails->count() > 0)
-                        <div class="bg-white rounded-xl shadow-sm border border-red-100 p-4">
-                            <ul class="space-y-3">
-                                @foreach($myPendingDetails as $detail)
-                                    <li class="flex justify-between items-center p-3 border border-red-50 bg-red-50/50 rounded-lg">
-                                        <div class="text-right">
-                                            <div class="font-black text-red-600 mb-1">
-                                                {{ number_format($detail->amount, 2) }} <span class="text-xs">DH</span>
-                                            </div>
-                                            <form action="{{ route('expenses.pay', $detail->id) }}" method="POST">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-1 rounded hover:bg-emerald-200 font-bold transition-colors">
-                                                    Mark as paid
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </li>
-                                @endforeach
-                            </ul>
+                        <div class="space-y-4">
+                            @forelse($myPendingDetails as $detail)
+                                <div class="bg-orange-50 border border-orange-100 p-4 rounded-xl flex justify-between items-center">
+                                    <div>
+                                        <div class="font-bold text-slate-800">Moi</div>
+                                        <div class="text-sm text-orange-600 font-medium">Doit à {{ $detail->expense->payer->name }}</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-bold text-orange-600 text-lg">{{ number_format($detail->amount, 2) }} DH</div>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="text-center p-4 bg-slate-50 rounded-xl border border-slate-100 text-slate-500 text-sm italic">
+                                    Vous n'avez aucune dette en cours. Bravo !
+                                </div>
+                            @endforelse
                         </div>
-                    @else
-                        <div class="bg-white rounded-xl shadow-sm border border-emerald-100 p-6">
-                            <div class="flex flex-col items-center justify-center text-center">
-                                <svg class="w-10 h-10 text-emerald-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                <p class="text-sm text-emerald-600 font-medium">Super ! Vous n'avez aucune dette en attente.</p>
-                            </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
+                        <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Ce qu'on me doit
+                        </h3>
+
+                        <div class="space-y-4">
+                            @forelse($owedToMeDetails as $detail)
+                                <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl flex justify-between items-center">
+                                    <div>
+                                        <div class="font-bold text-slate-800 capitalize">{{ $detail->debtor->name }}</div>
+                                        <div class="text-sm text-emerald-600 font-medium">Me doit</div>
+                                    </div>
+                                    <div class="text-right flex flex-col items-end gap-2">
+                                        <div class="font-bold text-emerald-600 text-lg">{{ number_format($detail->amount, 2) }} DH</div>
+                                        <form action="{{ route('expenses.pay', $detail->id) }}" method="POST">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="bg-emerald-200 text-emerald-800 px-3 py-1 rounded text-xs font-bold hover:bg-emerald-300 transition-colors shadow-sm">
+                                                Mark as paid
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="text-center p-4 bg-slate-50 rounded-xl border border-slate-100 text-slate-500 text-sm italic">
+                                    Personne ne vous doit d'argent pour le moment.
+                                </div>
+                            @endforelse
                         </div>
-                    @endif
+                    </div>
                 </div>
 
+            </div> <div class="w-full xl:w-80 space-y-6">
 
                 <div class="bg-slate-900 rounded-xl shadow-sm p-6 text-white">
                     <div class="flex justify-between items-center mb-6">
@@ -244,7 +287,9 @@
                             </form>
                         </div>
                     @endif
-                    @if($activeMembership && $activeMembership->role === 'owner')
+                </div>
+
+                @if($activeMembership && $activeMembership->role === 'owner')
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mt-6">
                     <h3 class="font-bold text-slate-800 mb-4">Gérer les catégories</h3>
 
@@ -270,9 +315,7 @@
 
                     <form action="{{ route('categories.store') }}" method="POST" class="flex gap-2">
                         @csrf
-
                         <input type="hidden" name="colocation_id" value="{{ $activeColocation->id }}">
-
                         <input type="text" name="name" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500">
                         <button type="submit" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors">
                             Add
@@ -280,10 +323,8 @@
                     </form>
                 </div>
                 @endif
-                </div>
 
-            </div>
-        </div>
+            </div> </div>
 
     @else
 
@@ -365,9 +406,8 @@
             </form>
         </div>
     </div>
-    @endif
+@endif
 </main>
-
 
         </div>
     </div>
