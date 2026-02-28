@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ColocationController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\MembershipController;
 
 Route::get('/', function () {return view('auth.login');});
 
@@ -40,6 +41,8 @@ Route::patch('/expenses-details/{id}/pay', [ExpenseController::class, 'markAsPai
 
 Route::post('/invitations', [InvitationController::class, 'store'])->middleware(['auth', 'is_banned'])->name('invitations.store');
 Route::get('/invitations/{token}/accept', [InvitationController::class, 'accept'])->middleware(['auth', 'is_banned'])->name('invitations.accept');
+
+Route::post('/colocation/leave', [MembershipController::class, 'leave'])->middleware(['auth', 'is_banned'])->name('colocation.leave');
 
 Route::middleware(['auth','is_banned', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('dashboard');
