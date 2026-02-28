@@ -15,7 +15,8 @@ class ColocationController extends Controller
     public function index()
     {
         $colocations = Colocation::whereHas('memberships', function ($query) {
-            $query->where('user_id', Auth::id());
+            $query->where('user_id', Auth::id())
+            ->whereNull('left_at');
         })
         ->orderBy('created_at', 'desc')
         ->get();
@@ -66,6 +67,7 @@ public function dashboard()
         $activeMembership = null;
         $activeColocation = null;
         $myPendingDetails = [];
+        $owedToMeDetails = [];
         $allPendingDetails = [];
 
         $membership = Membership::where('user_id', Auth::id())
@@ -80,14 +82,31 @@ public function dashboard()
             {
                 $activeMembership = $membership;
 
-                $activeColocation = Colocation::with('memberships.user', 'categories', 'expenses.payer', 'expenses.category')
-                    ->find($colocation->id);
-                    
+                $activeColocation = Colocation::with([
+                    'memberships' => function($query) {
+                        $query->whereNull('left_at');
+                    },
+                    'memberships.user',
+                    'categories',
+                    'expenses.payer',
+                    'expenses.category'
+                ])->find($colocation->id);
+
                 $activeColocation->expenses = $activeColocation->expenses->sortByDesc('expense_date');
                 $expenseIds = Expense::where('colocation_id', $activeColocation->id)->pluck('id');
 
-                $myPendingDetails = ExpenseDetail::with('expense.payer')
+                $myPendingDetails = ExpenseDetail::with(['expense.payer', 'debtor'])
                     ->where('debtor_id', Auth::id())
+                    ->where('status', 'unpaid')
+                    ->whereIn('expense_id', $expenseIds)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+
+                $owedToMeDetails = ExpenseDetail::with(['expense.payer', 'debtor'])
+                    ->whereHas('expense', function($query) {
+                        $query->where('payer_id', Auth::id());
+                    })
+                    ->where('debtor_id', '!=', Auth::id())
                     ->where('status', 'unpaid')
                     ->whereIn('expense_id', $expenseIds)
                     ->orderBy('created_at', 'desc')
@@ -102,7 +121,7 @@ public function dashboard()
             }
         }
 
-        return view('user-dashboard', compact('activeColocation', 'activeMembership', 'myPendingDetails', 'allPendingDetails'));
+        return view('user-dashboard', compact('activeColocation', 'activeMembership', 'myPendingDetails', 'owedToMeDetails', 'allPendingDetails'));
     }
 
 }
