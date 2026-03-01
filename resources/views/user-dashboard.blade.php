@@ -272,12 +272,19 @@
                                     </div>
                                     <div>
                                         <p class="font-bold text-sm">{{ $member->user->name }}</p>
-                                        @if($member->role === 'owner')
-                                            <p class="text-xs text-amber-500 font-bold"> OWNER</p>
-                                        @endif
+
+                                        <div class="flex items-center gap-2">
+                                            @if($member->role === 'owner')
+                                                <p class="text-xs text-amber-500 font-bold"> OWNER</p>
+                                            @endif
+
+                                            @if($member->user->is_banned)
+                                                <p class="text-[10px] text-red-400 font-bold bg-red-500/10 px-1.5 py-0.5 rounded uppercase tracking-wider"> BANNED</p>
+                                            @endif
+                                        </div>
+
                                     </div>
                                 </div>
-                                <span class="text-emerald-500 font-bold">0</span>
                             </div>
                         @endforeach
                     </div>
