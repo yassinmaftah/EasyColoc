@@ -36,6 +36,9 @@ class ExpenseController extends Controller
 
         $activeMembers = Membership::where('colocation_id', $request->colocation_id)
             ->whereNull('left_at')
+            ->whereHas('user', function($query){
+                $query->where('is_banned', false);
+            })
             ->get();
 
         $numberOfMembers = $activeMembers->count();
