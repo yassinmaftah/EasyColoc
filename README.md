@@ -405,6 +405,3 @@ A complete endpoint catalog with request/response JSON examples is maintained in
 
 ---
 
-## 📄 License
-
-Distributed under the [MIT License](LICENSE).
