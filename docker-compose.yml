@@ -1,0 +1,48 @@
+services:
+  db:
+    image: mariadb:lts
+    container_name: easycoloc_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: easycoloc
+      MYSQL_USER: easycoloc
+      MYSQL_PASSWORD: easycoloc_password
+      MYSQL_ROOT_PASSWORD: root_password
+    ports:
+      - "${DB_PORT:-3308}:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -u root -proot_password --silent || exit 1"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: easycoloc_app
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8010}:8000"
+    environment:
+      - APP_NAME=EasyColoc
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_URL=http://localhost:${APP_PORT:-8010}
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=easycoloc
+      - DB_USERNAME=easycoloc
+      - DB_PASSWORD=easycoloc_password
+      - SESSION_DRIVER=file
+      - CACHE_STORE=file
+      - QUEUE_CONNECTION=sync
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
